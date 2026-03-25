@@ -9,7 +9,9 @@ from collections import defaultdict
 from pathlib import Path
 from urllib.request import urlopen
 
-TIGER_URL = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_ACS2023/MapServer/10/query"
+# Layer 8 = Census 2020 Block Groups (has HU100, POP100)
+# Layer 10 = ACS2023 Block Groups (does NOT have HU100/POP100)
+TIGER_URL = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/8/query"
 COORD_DECIMALS = 4
 MIDWEST = {"17", "18", "26"}
 STATE_NAMES = {"17": "Illinois", "18": "Indiana", "26": "Michigan"}
@@ -68,7 +70,7 @@ def fetch_polygons(geoid_set):
 
         where = "STATE='" + state + "'+AND+COUNTY='" + ccode + "'"
         url = (TIGER_URL + "?where=" + where +
-               "&outFields=GEOID,AREALAND" +
+               "&outFields=GEOID,AREALAND,HU100,POP100" +
                "&f=geojson&outSR=4326&returnGeometry=true")
         # urlopen requires no literal spaces — use + for spaces in query params
 
@@ -94,6 +96,8 @@ def fetch_polygons(geoid_set):
                     cache[geoid] = {
                         "geometry": round_coords(feat["geometry"]),
                         "arealand": feat["properties"].get("AREALAND", 0),
+                        "hu100": feat["properties"].get("HU100", 0),
+                        "pop100": feat["properties"].get("POP100", 0),
                     }
                     total += 1
         except Exception as e:
@@ -115,8 +119,11 @@ def build_geojson(bgs, polygons):
         cached = polygons.get(geoid)
         if not cached:
             continue
-        area_km2 = cached["arealand"] / 1e6
+        area_km2 = float(cached["arealand"] or 0) / 1e6
         density = (bgs[geoid]["bsls"] / area_km2) if area_km2 > 0 else 0
+        hu100 = cached.get("hu100", 0) or 0
+        pop100 = cached.get("pop100", 0) or 0
+        coverage_pct = round(bgs[geoid]["bsls"] / hu100 * 100, 1) if hu100 > 0 else 0
         features.append({
             "type": "Feature",
             "properties": {
@@ -124,6 +131,9 @@ def build_geojson(bgs, polygons):
                 "bsls": bgs[geoid]["bsls"],
                 "state": geoid[:2],
                 "county": geoid[:5],
+                "hu100": int(hu100),
+                "pop100": int(pop100),
+                "coveragePct": min(coverage_pct, 100),
                 "density": round(density, 1),
             },
             "geometry": cached["geometry"],

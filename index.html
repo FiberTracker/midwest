@@ -721,13 +721,39 @@
                 const poly = f.geometry.type === 'MultiPolygon'
                     ? L.polygon(coords, { color: '#00759E', fillColor: '#00759E', fillOpacity: opacity, weight: 0.5, opacity: 0.4 })
                     : L.polygon(coords, { color: '#00759E', fillColor: '#00759E', fillOpacity: opacity, weight: 0.5, opacity: 0.4 });
-                poly.bindPopup(`<div style="font-family:Inter,sans-serif;min-width:200px;">
-                    <div style="font-weight:700;font-size:13px;color:#00759E;">Surf Internet — FCC BDC</div>
-                    <div style="font-size:11px;margin-top:4px;"><strong>FTTP BSLs:</strong> ${f.properties.bsls.toLocaleString()}</div>
-                    <div style="font-size:11px;"><strong>Block Group:</strong> ${f.properties.id}</div>
-                    <div style="font-size:11px;"><strong>Density:</strong> ${f.properties.density} BSLs/km²</div>
-                    <div style="font-size:10px;color:#94A3B8;margin-top:4px;">Source: FCC BDC J25 (June 2025 filing)</div>
-                </div>`, { maxWidth: 300 });
+                const hu = f.properties.hu100 || 0;
+                const pop = f.properties.pop100 || 0;
+                const covPct = f.properties.coveragePct || 0;
+                const covColor = covPct > 80 ? '#15803D' : covPct > 40 ? '#92400E' : '#DC2626';
+                poly.bindPopup(`<div style="font-family:Inter,-apple-system,sans-serif;min-width:280px;">
+                    <div style="font-size:10px;color:#64748B;margin-bottom:2px;">Census Block Group ${f.properties.id}</div>
+                    <div style="font-weight:700;font-size:14px;color:#00759E;margin-bottom:8px;">Surf Internet — FCC BDC</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
+                        <div style="background:#F1F5F9;padding:6px 8px;border-radius:6px;">
+                            <div style="font-size:9px;color:#64748B;">Housing Units</div>
+                            <div style="font-weight:700;font-size:16px;color:#0F172A;">${hu.toLocaleString()}</div>
+                        </div>
+                        <div style="background:#F1F5F9;padding:6px 8px;border-radius:6px;">
+                            <div style="font-size:9px;color:#64748B;">Population</div>
+                            <div style="font-weight:700;font-size:16px;color:#0F172A;">${pop.toLocaleString()}</div>
+                        </div>
+                        <div style="background:#F1F5F9;padding:6px 8px;border-radius:6px;">
+                            <div style="font-size:9px;color:#64748B;">FTTP BSLs</div>
+                            <div style="font-weight:700;font-size:16px;color:#00759E;">${f.properties.bsls.toLocaleString()}</div>
+                        </div>
+                        <div style="background:#F0FDF4;padding:6px 8px;border-radius:6px;">
+                            <div style="font-size:9px;color:#64748B;">Coverage</div>
+                            <div style="font-weight:700;font-size:16px;color:${covColor};">${covPct}%</div>
+                        </div>
+                    </div>
+                    <div style="border-top:1px solid #E2E8F0;padding-top:6px;">
+                        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px;">
+                            <span style="color:#64748B;">Density</span>
+                            <span style="font-weight:600;">${f.properties.density} BSLs/km²</span>
+                        </div>
+                    </div>
+                    <div style="font-size:9px;color:#94A3B8;margin-top:6px;">Source: FCC BDC J25 (Jun 2025) | Census 2020</div>
+                </div>`, { maxWidth: 350 });
                 bdcLayers.surf.addLayer(poly);
             });
             document.getElementById('bdcStats').textContent = `Surf: ${SURF_BDC_COVERAGE.features.length} block groups loaded from FCC BDC`;
