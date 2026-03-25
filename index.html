@@ -65,7 +65,7 @@
 <body class="bg-gray-100 min-h-screen p-2 md:p-4">
 
     <!-- Password Protection -->
-    <div id="auth-overlay" class="hidden">
+    <div id="auth-overlay">
         <div class="auth-box">
             <div style="margin-bottom: 16px;">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#BD000C" stroke-width="1.5" style="margin: 0 auto;">
@@ -84,7 +84,7 @@
     <script>
         function checkAuth() {
             var input = document.getElementById('auth-input').value;
-            if (simpleHash(input) === '6656a0296656a029') {
+            if (simpleHash(input) === '645e2cbf645e2cbf') {
                 document.getElementById('auth-overlay').classList.add('hidden');
                 sessionStorage.setItem('mw_auth', '1');
                 return false;
