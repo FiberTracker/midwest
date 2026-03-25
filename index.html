@@ -113,7 +113,7 @@
     <!-- BDC data loaded async -->
     <script>
     function loadBDCScripts() {
-        const files = ['bdc_output/surf_bdc.js', 'bdc_output/ezee_bdc.js', 'bdc_output/metronet_bdc.js', 'bdc_output/att_bdc.js'];
+        const files = ['bdc_output/surf_bdc.js', 'bdc_output/ezee_bdc.js'];
         let loaded = 0;
         let total = files.length;
         files.forEach(f => {
@@ -195,7 +195,9 @@
                         <div class="mb-2 pb-2 border-b border-slate-100">
                             <div class="flex items-center gap-1.5 mb-1.5 flex-wrap">
                                 <span class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mr-1">FCC BDC:</span>
-                                <span id="bdcStats" class="text-[10px] text-slate-400">Run download_bdc_api.py + process_bdc.py for BDC shading</span>
+                                <button onclick="toggleBDCLayer('surf')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold" style="background:#00759E;color:white;">Surf BDC</button>
+                                <button onclick="toggleBDCLayer('ezee')" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold" style="background:#BD000C;color:white;">Ezee Planned</button>
+                                <span id="bdcStats" class="text-[10px] text-slate-400">Loading...</span>
                             </div>
                         </div>
                         <!-- Provider Filters -->
@@ -698,6 +700,79 @@
             `;
             tbody.appendChild(tr);
         });
+    }
+
+    // ============================================
+    // BDC COVERAGE SHADING
+    // ============================================
+    const bdcLayers = { surf: L.layerGroup().addTo(map), ezee: L.layerGroup().addTo(map) };
+    const bdcActive = { surf: true, ezee: true };
+
+    function renderAllBDC() {
+        // Surf BDC — actual FCC filing data
+        if (typeof SURF_BDC_COVERAGE !== 'undefined' && SURF_BDC_COVERAGE.features.length > 0) {
+            SURF_BDC_COVERAGE.features.forEach(f => {
+                if (!f.geometry) return;
+                const coords = f.geometry.type === 'MultiPolygon'
+                    ? f.geometry.coordinates.map(p => p.map(r => r.map(c => [c[1], c[0]])))
+                    : f.geometry.coordinates.map(r => r.map(c => [c[1], c[0]]));
+                const density = f.properties.density || 0;
+                const opacity = Math.min(0.15 + (density / 500) * 0.45, 0.6);
+                const poly = f.geometry.type === 'MultiPolygon'
+                    ? L.polygon(coords, { color: '#00759E', fillColor: '#00759E', fillOpacity: opacity, weight: 0.5, opacity: 0.4 })
+                    : L.polygon(coords, { color: '#00759E', fillColor: '#00759E', fillOpacity: opacity, weight: 0.5, opacity: 0.4 });
+                poly.bindPopup(`<div style="font-family:Inter,sans-serif;min-width:200px;">
+                    <div style="font-weight:700;font-size:13px;color:#00759E;">Surf Internet — FCC BDC</div>
+                    <div style="font-size:11px;margin-top:4px;"><strong>FTTP BSLs:</strong> ${f.properties.bsls.toLocaleString()}</div>
+                    <div style="font-size:11px;"><strong>Block Group:</strong> ${f.properties.id}</div>
+                    <div style="font-size:11px;"><strong>Density:</strong> ${f.properties.density} BSLs/km²</div>
+                    <div style="font-size:10px;color:#94A3B8;margin-top:4px;">Source: FCC BDC J25 (June 2025 filing)</div>
+                </div>`, { maxWidth: 300 });
+                bdcLayers.surf.addLayer(poly);
+            });
+            document.getElementById('bdcStats').textContent = `Surf: ${SURF_BDC_COVERAGE.features.length} block groups loaded from FCC BDC`;
+        }
+
+        // Ezee planned build areas (not in BDC yet — show announced counties)
+        const ezeePlanned = [
+            { name: 'DuPage County, IL', coords: [[41.95,-88.25],[41.95,-87.85],[41.72,-87.85],[41.72,-88.25]], status: 'Active (Jan 2026)', investment: '$400M Chicagoland' },
+            { name: 'Cook County (W/SW suburbs), IL', coords: [[41.95,-87.85],[41.95,-87.65],[41.70,-87.65],[41.70,-87.85]], status: 'Construction', investment: 'Part of $400M' },
+            { name: 'Lake County, IL', coords: [[42.50,-88.10],[42.50,-87.75],[42.15,-87.75],[42.15,-88.10]], status: 'Planned', investment: 'Part of $400M' },
+            { name: 'Kane County, IL', coords: [[42.10,-88.55],[42.10,-88.20],[41.75,-88.20],[41.75,-88.55]], status: 'Planned', investment: 'Part of $400M' },
+            { name: 'Will County, IL', coords: [[41.70,-88.25],[41.70,-87.80],[41.40,-87.80],[41.40,-88.25]], status: 'Planned', investment: 'Part of $400M' },
+            { name: 'Wayne County, MI (Detroit)', coords: [[42.45,-83.30],[42.45,-82.95],[42.20,-82.95],[42.20,-83.30]], status: 'Construction (Feb 2026)', investment: 'Metro Detroit build' },
+            { name: 'Oakland County, MI', coords: [[42.70,-83.50],[42.70,-83.10],[42.40,-83.10],[42.40,-83.50]], status: 'Construction', investment: 'Metro Detroit build' },
+            { name: 'Macomb County, MI', coords: [[42.70,-83.10],[42.70,-82.75],[42.40,-82.75],[42.40,-83.10]], status: 'Construction', investment: 'Metro Detroit build' },
+            { name: 'Washtenaw County, MI (Ann Arbor)', coords: [[42.45,-84.00],[42.45,-83.55],[42.15,-83.55],[42.15,-84.00]], status: 'Planned', investment: 'Metro Detroit build' },
+        ];
+        ezeePlanned.forEach(area => {
+            const isActive = area.status.includes('Active') || area.status.includes('Construction');
+            const poly = L.polygon(area.coords, {
+                color: '#BD000C',
+                fillColor: '#BD000C',
+                fillOpacity: isActive ? 0.20 : 0.10,
+                weight: isActive ? 2 : 1.5,
+                dashArray: isActive ? null : '6,4',
+            });
+            poly.bindPopup(`<div style="font-family:Inter,sans-serif;min-width:220px;">
+                <div style="font-weight:700;font-size:13px;color:#BD000C;">Ezee Fiber — Planned Build</div>
+                <div style="font-size:12px;font-weight:600;margin-top:4px;">${area.name}</div>
+                <div style="font-size:11px;margin-top:4px;"><strong>Status:</strong> ${area.status}</div>
+                <div style="font-size:11px;"><strong>Investment:</strong> ${area.investment}</div>
+                <div style="font-size:11px;"><strong>Sponsor:</strong> I Squared Capital</div>
+                <div style="font-size:10px;color:#94A3B8;margin-top:4px;">Note: Not yet in FCC BDC (builds started Jan-Feb 2026)</div>
+            </div>`, { maxWidth: 300 });
+            bdcLayers.ezee.addLayer(poly);
+        });
+    }
+
+    // ============================================
+    // BDC TOGGLE CONTROLS
+    // ============================================
+    function toggleBDCLayer(key) {
+        bdcActive[key] = !bdcActive[key];
+        if (bdcActive[key]) map.addLayer(bdcLayers[key]);
+        else map.removeLayer(bdcLayers[key]);
     }
 
     // ============================================
