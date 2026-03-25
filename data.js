@@ -1,7 +1,7 @@
 // ============================================================
 // MIDWEST FTTH COMPETITIVE INTELLIGENCE — DATA LAYER
 // Surf Internet vs Ezee Fiber + Regional Competitors
-// Focus: IL/IN/MI overlap zones for I Squared Capital meeting
+// Focus: IL/IN/MI overlap zones
 // Last updated: March 2026
 // ============================================================
 
@@ -30,15 +30,20 @@ const OPERATOR_PROFILES = [
         states: ["IN", "IL", "MI"],
         stateCount: 3,
         metrics: [
-            { label: "Fiber Passings", value: "250,000+", asOf: "Dec 2025", source: "Surf Internet", sourceUrl: "https://www.surfinternet.com/" },
-            { label: "2025 Construction", value: "75,000+ new passings, 40 new markets", asOf: "Dec 2025", source: "Surf Internet", sourceUrl: "https://www.surfinternet.com/" },
-            { label: "ABS Issuance", value: "$407M inaugural fiber ABS (Class A-2: A-, Class B: BBB)", asOf: "Mar 2026", source: "Telecompetitor", sourceUrl: "https://www.telecompetitor.com/surf-internet-completes-407m-abs/" },
-            { label: "Equity Investment", value: "Macquarie Capital led (Jan 2026) + Bain Capital + Future Standard", asOf: "Jan 2026", source: "Surf Internet", sourceUrl: "https://www.surfinternet.com/" },
-            { label: "Debt Facility", value: "$300M upsized (DigitalBridge Credit), Feb 2025", asOf: "Feb 2025", source: "Surf Internet", sourceUrl: "https://www.surfinternet.com/" },
-            { label: "Total Capital Raised", value: "~$1.085B", asOf: "Mar 2026", source: "CBInsights", sourceUrl: "https://www.cbinsights.com/" },
-            { label: "Strategy", value: "Rural/suburban Great Lakes FTTH, BEAD-funded expansion", asOf: "2026", source: "Surf Internet", sourceUrl: "https://www.surfinternet.com/" },
-            { label: "COO", value: "Brent Williams (ex-Windstream SVP Engineering)", asOf: "May 2024", source: "LinkedIn", sourceUrl: "https://www.linkedin.com/" },
-            { label: "CFO", value: "Ryan Delack (Bain Capital affiliated)", asOf: "2025", source: "LinkedIn", sourceUrl: "https://www.linkedin.com/" },
+            { label: "Fiber Passings", value: "250,000+", asOf: "Dec 2025", source: "Surf Internet", sourceUrl: "https://surfinternet.com/news/surf-internet-celebrates-250000-fiber-optic-passings-after-record-breaking-year-of-growth/" },
+            { label: "Subscribers", value: "50,000+ (Nov 2024 milestone)", asOf: "Nov 2024", source: "Surf Internet", sourceUrl: "https://www.businesswire.com/news/home/20241121641047/en/Surf-Internet-Reaches-Major-Milestone-of-50000-Fiber-Optic-Internet-Subscribers" },
+            { label: "ARPU", value: "$73/mo (ABS collateral); most popular plan 1 Gbps at $71/mo", asOf: "Mar 2026", source: "RSI / Fiber Broadband Assn", sourceUrl: "https://fiberbroadband.org/2025/06/18/surf-internets-200k-fiber-passings-accelerating-rural-deployment-across-the-great-lakes/" },
+            { label: "Implied Revenue (ABS collateral)", value: "~$43-57M annualized*", asOf: "Mar 2026", source: "Derived (see note)", sourceUrl: "#" },
+            { label: "Build Rate", value: "8,000-10,000 passings/month", asOf: "Jun 2025", source: "Fiber Broadband Assn", sourceUrl: "https://fiberbroadband.org/2025/06/18/surf-internets-200k-fiber-passings-accelerating-rural-deployment-across-the-great-lakes/" },
+            { label: "2025 Construction", value: "75,000+ new passings, 40 new markets", asOf: "Dec 2025", source: "Surf Internet", sourceUrl: "https://surfinternet.com/news/surf-internet-celebrates-250000-fiber-optic-passings-after-record-breaking-year-of-growth/" },
+            { label: "ABS", value: "$407M inaugural (Sr 6.12%, Sub 7.85%). Rated A-/BBB by S&P and Fitch. Collateral = most mature portions of footprint only", asOf: "Mar 2026", source: "Telecompetitor", sourceUrl: "https://www.telecompetitor.com/the-latest-abs-deal-surf-internet-gains-407m-via-asset-backed-securitization/" },
+            { label: "Projected Take Rate", value: "40%+ within 18 months of market entry", asOf: "2026", source: "RSI Analysis", sourceUrl: "https://www.rsinc.com/surf-internet-closes-407-million-inaugural-fiber-abs.php" },
+            { label: "Churn", value: "<1% monthly", asOf: "2023", source: "Michigan ROBIN grant filing", sourceUrl: "#" },
+            { label: "Delinquency", value: "<2% (ABS collateral)", asOf: "Mar 2026", source: "RSI Analysis", sourceUrl: "https://www.rsinc.com/surf-internet-closes-407-million-inaugural-fiber-abs.php" },
+            { label: "Long-Term Target", value: "500,000 passings", asOf: "2025", source: "Fiber Broadband Assn", sourceUrl: "https://fiberbroadband.org/2025/06/18/surf-internets-200k-fiber-passings-accelerating-rural-deployment-across-the-great-lakes/" },
+            { label: "Equity Investment", value: "Macquarie Capital led (Jan 2026) + Bain Capital + Future Standard", asOf: "Jan 2026", source: "Surf Internet", sourceUrl: "https://surfinternet.com/news/macquarie-capital-leads-continued-investment-in-surf-internet/" },
+            { label: "Total Capital Raised", value: "~$1.085B", asOf: "Mar 2026", source: "Market Intel", sourceUrl: "#" },
+            { label: "Note", value: "*Revenue derived from $73 ARPU x estimated securitized subscriber base. ABS collateral covers only the most mature portions of footprint, not full company revenue.", asOf: "", source: "", sourceUrl: "#" },
         ]
     },
     {
@@ -307,14 +312,17 @@ const CALCULATIONS = {
     },
     surfValuation: {
         label: "Surf Implied Valuation Range",
-        formula: "250K+ passings x $3,000-$4,000+/HHP = $750M-$1B+ EV (includes construction backlog)",
-        result: "$750M - $1B+ EV (est.)",
+        formula: "250K+ passings x $2,500-$4,000/HHP = $625M-$1B+ EV (includes construction backlog)",
+        result: "$625M - $1B+ EV (est.)",
         inputs: [
-            { label: "Current Passings", value: "250,000+", asOf: "Dec 2025", source: "Surf Internet", sourceUrl: "https://www.surfinternet.com/" },
-            { label: "Construction Backlog", value: "75K+/yr build rate, active expansion in 40 new markets", asOf: "2025", source: "Surf Internet", sourceUrl: "https://www.surfinternet.com/" },
-            { label: "Market $/HHP range", value: "$3,000 - $4,000+", asOf: "Mar 2026", source: "Market Intel", sourceUrl: "#" },
-            { label: "ABS capacity", value: "$407M (debt)", asOf: "Mar 2026", source: "Telecompetitor", sourceUrl: "https://www.telecompetitor.com/surf-internet-completes-407m-abs/" },
+            { label: "Current Passings", value: "250,000+", asOf: "Dec 2025", source: "Surf Internet", sourceUrl: "https://surfinternet.com/news/surf-internet-celebrates-250000-fiber-optic-passings-after-record-breaking-year-of-growth/" },
+            { label: "Subscribers", value: "50,000+ (Nov 2024); growing", asOf: "Nov 2024", source: "Surf Internet PR", sourceUrl: "https://www.businesswire.com/news/home/20241121641047/en/" },
+            { label: "ARPU (ABS collateral)", value: "$73/mo", asOf: "Mar 2026", source: "RSI Analysis", sourceUrl: "https://www.rsinc.com/surf-internet-closes-407-million-inaugural-fiber-abs.php" },
+            { label: "Implied Revenue (ABS collateral)", value: "~$43-57M annualized*", asOf: "Mar 2026", source: "Derived", sourceUrl: "#" },
+            { label: "Build Rate", value: "8,000-10,000 passings/mo (500K target)", asOf: "Jun 2025", source: "Fiber Broadband Assn", sourceUrl: "https://fiberbroadband.org/2025/06/18/surf-internets-200k-fiber-passings-accelerating-rural-deployment-across-the-great-lakes/" },
+            { label: "Market $/HHP range", value: "$2,500 - $4,000", asOf: "Mar 2026", source: "Market Intel", sourceUrl: "#" },
+            { label: "ABS (Sr / Sub coupon)", value: "$407M (6.12% / 7.85%)", asOf: "Mar 2026", source: "RSI Analysis", sourceUrl: "https://www.rsinc.com/surf-internet-closes-407-million-inaugural-fiber-abs.php" },
         ],
-        caveat: "Revenue/EBITDA not publicly disclosed. Range reflects current passings plus value of dollars-in-the-ground from active construction pipeline. Higher end assumes credit for backlog buildout."
+        caveat: "*Revenue derived from $73 ARPU x estimated securitized sub base. ABS collateral covers only the most mature portions of footprint — full company revenue likely higher. EV range reflects current passings plus value of dollars-in-the-ground from active construction pipeline at 8-10K passings/month."
     },
 };
