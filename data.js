@@ -74,7 +74,7 @@ const OPERATOR_PROFILES = [
     {
         id: "metronet",
         name: "MetroNet",
-        sponsor: "KKR / Oak Hill Capital",
+        sponsor: "KKR / T-Mobile",
         hq: "Evansville, IN",
         ceo: "John Cinelli",
         states: ["IN", "IL", "MI", "OH", "KY", "IA", "WI", "MN", "FL", "VA", "NC", "TX"],
@@ -82,9 +82,8 @@ const OPERATOR_PROFILES = [
         metrics: [
             { label: "Homes Passed", value: "2M+", asOf: "2025", source: "MetroNet", sourceUrl: "https://www.metronetinc.com/" },
             { label: "Build Rate", value: "500,000 passings/yr", asOf: "2025", source: "MetroNet", sourceUrl: "https://www.metronetinc.com/" },
-            { label: "Pen Rate", value: "35-43% mature markets", asOf: "2025", source: "Industry", sourceUrl: "https://www.metronetinc.com/" },
-            { label: "T-Mobile Valuation", value: "$4,900/HHP (25.0x EBITDA)", asOf: "Jul 2024", source: "T-Mobile", sourceUrl: "https://www.t-mobile.com/" },
-            { label: "T-Mobile JV Status", value: "Regulatory delay — insurance structure blocking", asOf: "Mar 2026", source: "UBS Internal", sourceUrl: "#" },
+            { label: "Pen Rate", value: "35-43% mature markets", asOf: "2025", source: "MetroNet", sourceUrl: "https://www.metronetinc.com/" },
+            { label: "T-Mobile JV", value: "$4,900/HHP (25.0x EBITDA). Now disclosed in T-Mobile earnings", asOf: "Jul 2024", source: "T-Mobile", sourceUrl: "https://www.t-mobile.com/" },
         ]
     },
     {
