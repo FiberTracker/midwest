@@ -1,0 +1,20 @@
+{
+  "provider": "Surf Internet",
+  "provider_id": "310066",
+  "total_block_groups": 812,
+  "total_fttp_bsls": 216858,
+  "by_state": {
+    "Illinois": {
+      "block_groups": 164,
+      "bsls": 46988
+    },
+    "Indiana": {
+      "block_groups": 438,
+      "bsls": 122515
+    },
+    "Michigan": {
+      "block_groups": 210,
+      "bsls": 47355
+    }
+  }
+}

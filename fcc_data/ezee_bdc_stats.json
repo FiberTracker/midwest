@@ -1,0 +1,16 @@
+{
+  "provider": "Ezee Fiber",
+  "provider_id": "460032",
+  "total_block_groups": 1227,
+  "total_fttp_bsls": 277996,
+  "by_state": {
+    "New Mexico": {
+      "block_groups": 103,
+      "bsls": 13671
+    },
+    "Texas": {
+      "block_groups": 1124,
+      "bsls": 264325
+    }
+  }
+}

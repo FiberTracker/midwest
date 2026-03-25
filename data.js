@@ -306,14 +306,15 @@ const CALCULATIONS = {
         caveat: "Hypothetical combination. Sponsors (Bain/Macquarie vs I Squared) would make a merger structurally complex. Geographic overlap limited to IL (partial) and MI (minimal current)."
     },
     surfValuation: {
-        label: "Surf Implied Valuation (ABS-Based)",
-        formula: "ABS: $407M. At market comps: $2,500-2,800/HHP x 250K = $625M-$700M EV",
-        result: "$625M - $700M EV (est.)",
+        label: "Surf Implied Valuation Range",
+        formula: "250K+ passings x $3,000-$4,000+/HHP = $750M-$1B+ EV (includes construction backlog)",
+        result: "$750M - $1B+ EV (est.)",
         inputs: [
-            { label: "Passings", value: "250,000+", asOf: "Dec 2025", source: "Surf Internet", sourceUrl: "https://www.surfinternet.com/" },
-            { label: "Market $/HHP range", value: "$2,500 - $2,800", asOf: "Mar 2026", source: "Lazard/UBS", sourceUrl: "#" },
+            { label: "Current Passings", value: "250,000+", asOf: "Dec 2025", source: "Surf Internet", sourceUrl: "https://www.surfinternet.com/" },
+            { label: "Construction Backlog", value: "75K+/yr build rate, active expansion in 40 new markets", asOf: "2025", source: "Surf Internet", sourceUrl: "https://www.surfinternet.com/" },
+            { label: "Market $/HHP range", value: "$3,000 - $4,000+", asOf: "Mar 2026", source: "Market Intel", sourceUrl: "#" },
             { label: "ABS capacity", value: "$407M (debt)", asOf: "Mar 2026", source: "Telecompetitor", sourceUrl: "https://www.telecompetitor.com/surf-internet-completes-407m-abs/" },
         ],
-        caveat: "Revenue/EBITDA not publicly disclosed. Implied from ABS capacity and passing count. Surf is testing the market for IOIs."
+        caveat: "Revenue/EBITDA not publicly disclosed. Range reflects current passings plus value of dollars-in-the-ground from active construction pipeline. Higher end assumes credit for backlog buildout."
     },
 };
