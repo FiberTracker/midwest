@@ -1,0 +1,7 @@
+fcc_data/*.csv
+fcc_data/*.zip
+*.pyc
+__pycache__/
+.DS_Store
+.env
+*.headers
